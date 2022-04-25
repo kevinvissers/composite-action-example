@@ -1,25 +1,27 @@
 name: 'Composite action example'
 description: 'An example of a composite action'
 inputs:
-  node-version:
-    description: 'Version of node'
-    required: false
-    default: '14'
-  registry-auth:
-    description: 'Registry auth token'
+  file-name:
+    description: 'Name of the file'
     required: true
+  file-content:
+    description: 'Content of the file'
+    required: true
+  artifact-name:
+    description: 'Name of the artifact'
+    required: false
+    default: 'my-artifact'
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v3
+    - name: 'Create file'
+      run: touch ${{ inputs.file-name }}
+    - name: 'Add content'
+      run: echo ${{ inputs.file-content }} >> ${{ inputs.file-name }}
+    - name: 'Display file content'
+      run: cat ${{ inputs.file-name }}
+    - name: Create artifact
+      uses: actions/upload-artifact@v3
       with:
-        node-version: ${{ inputs.node-version }}
-        cache: 'npm'
-    - uses: healthplace/npmrc-registry-login-action@v1.0
-      with:
-        scope: '@acmeorg'
-        registry: 'https://npm.pkg.github.com'
-        auth-token: ${{ inputs.registry-auth }}       
-    - run: node -v
-      shell: bash
-      
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.file-name }}
