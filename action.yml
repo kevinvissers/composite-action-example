@@ -1,0 +1,25 @@
+name: 'Composite action example'
+description: 'An example of a composite action'
+inputs:
+  node-version:
+    description: 'Version of node'
+    required: false
+    default: '14'
+  registry-auth:
+    description: 'Registry auth token'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+    - uses: healthplace/npmrc-registry-login-action@v1.0
+      with:
+        scope: '@acmeorg'
+        registry: 'https://npm.pkg.github.com'
+        auth-token: ${{ inputs.registry-auth }}       
+    - run: node -v
+      shell: bash
+      
