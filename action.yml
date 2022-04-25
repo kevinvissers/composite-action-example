@@ -16,8 +16,10 @@ runs:
   steps:
     - name: 'Create file'
       run: touch ${{ inputs.file-name }}
+      shell: bash
     - name: 'Add content'
       run: echo ${{ inputs.file-content }} >> ${{ inputs.file-name }}
+      shell: bash
     - name: Create artifact
       uses: actions/upload-artifact@v3
       with:
